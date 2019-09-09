@@ -86,7 +86,7 @@ function url_sep(url) {
 	-start: starts the test. optionally, settings can be passed as JSON.
 		example: start {"time_ul_max":"10", "time_dl_max":"10", "count_ping":"50"}
 */
-this.addEventListener("message", function(e) {
+this.addEventListener("message", function (e) {
 	var params = e.data.split(" ");
 	if (params[0] === "status") {
 		// return status
@@ -179,12 +179,12 @@ this.addEventListener("message", function(e) {
 			dRun = false,
 			uRun = false,
 			pRun = false;
-		var runNextTest = function() {
+		var runNextTest = function () {
 			if (testState == 5) return;
 			if (test_pointer >= settings.test_order.length) {
 				//test is finished
 				if (settings.telemetry_level > 0)
-					sendTelemetry(function(id) {
+					sendTelemetry(function (id) {
 						testState = 4;
 						if (id != null) testId = id;
 					});
@@ -249,18 +249,18 @@ this.addEventListener("message", function(e) {
 	}
 	if (params[0] === "abort") {
 		// abort command
-        if (testState >= 4) return;
+		if (testState >= 4) return;
 		tlog("manually aborted");
 		clearRequests(); // stop all xhr activity
 		runNextTest = null;
 		if (interval) clearInterval(interval); // clear timer if present
-		if (settings.telemetry_level > 1) sendTelemetry(function() {});
+		if (settings.telemetry_level > 1) sendTelemetry(function () { });
 		testState = 5; //set test as aborted
 		dlStatus = "";
 		ulStatus = "";
 		pingStatus = "";
 		jitterStatus = "";
-        clientIp = "";
+		clientIp = "";
 		dlProgress = 0;
 		ulProgress = 0;
 		pingProgress = 0;
@@ -275,18 +275,18 @@ function clearRequests() {
 				xhr[i].onprogress = null;
 				xhr[i].onload = null;
 				xhr[i].onerror = null;
-			} catch (e) {}
+			} catch (e) { }
 			try {
 				xhr[i].upload.onprogress = null;
 				xhr[i].upload.onload = null;
 				xhr[i].upload.onerror = null;
-			} catch (e) {}
+			} catch (e) { }
 			try {
 				xhr[i].abort();
-			} catch (e) {}
+			} catch (e) { }
 			try {
 				delete xhr[i];
-			} catch (e) {}
+			} catch (e) { }
 		}
 		xhr = null;
 	}
@@ -300,7 +300,7 @@ function getIp(done) {
 	else ipCalled = true; // getIp already called?
 	var startT = new Date().getTime();
 	xhr = new XMLHttpRequest();
-	xhr.onload = function() {
+	xhr.onload = function () {
 		tlog("IP: " + xhr.responseText + ", took " + (new Date().getTime() - startT) + "ms");
 		try {
 			var data = JSON.parse(xhr.responseText);
@@ -312,7 +312,7 @@ function getIp(done) {
 		}
 		done();
 	};
-	xhr.onerror = function() {
+	xhr.onerror = function () {
 		tlog("getIp failed, took " + (new Date().getTime() - startT) + "ms");
 		done();
 	};
@@ -332,20 +332,20 @@ function dlTest(done) {
 		failed = false; // set to true if a stream fails
 	xhr = [];
 	// function to create a download stream. streams are slightly delayed so that they will not end at the same time
-	var testStream = function(i, delay) {
+	var testStream = function (i, delay) {
 		setTimeout(
-			function() {
+			function () {
 				if (testState !== 1) return; // delayed stream ended up starting after the end of the download test
 				tverb("dl test stream started " + i + " " + delay);
 				var prevLoaded = 0; // number of bytes loaded last time onprogress was called
 				var x = new XMLHttpRequest();
 				xhr[i] = x;
-				xhr[i].onprogress = function(event) {
+				xhr[i].onprogress = function (event) {
 					tverb("dl stream progress event " + i + " " + event.loaded);
 					if (testState !== 1) {
 						try {
 							x.abort();
-						} catch (e) {}
+						} catch (e) { }
 					} // just in case this XHR is still running after the download test
 					// progress event, add number of new loaded bytes to totLoaded
 					var loadDiff = event.loaded <= 0 ? 0 : event.loaded - prevLoaded;
@@ -353,21 +353,21 @@ function dlTest(done) {
 					totLoaded += loadDiff;
 					prevLoaded = event.loaded;
 				}.bind(this);
-				xhr[i].onload = function() {
+				xhr[i].onload = function () {
 					// the large file has been loaded entirely, start again
 					tverb("dl stream finished " + i);
 					try {
 						xhr[i].abort();
-					} catch (e) {} // reset the stream data to empty ram
+					} catch (e) { } // reset the stream data to empty ram
 					testStream(i, 0);
 				}.bind(this);
-				xhr[i].onerror = function() {
+				xhr[i].onerror = function () {
 					// error
 					tverb("dl stream failed " + i);
 					if (settings.xhr_ignoreErrors === 0) failed = true; //abort
 					try {
 						xhr[i].abort();
-					} catch (e) {}
+					} catch (e) { }
 					delete xhr[i];
 					if (settings.xhr_ignoreErrors === 1) testStream(i, 0); //restart stream
 				}.bind(this);
@@ -375,8 +375,9 @@ function dlTest(done) {
 				try {
 					if (settings.xhr_dlUseBlob) xhr[i].responseType = "blob";
 					else xhr[i].responseType = "arraybuffer";
-				} catch (e) {}
-				xhr[i].open("GET", settings.url_dl + url_sep(settings.url_dl) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random() + "&ckSize=" + settings.garbagePhp_chunkSize, true); // random string to prevent caching
+				} catch (e) { }
+				// xhr[i].open("GET", settings.url_dl + url_sep(settings.url_dl) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random() + "&ckSize=" + settings.garbagePhp_chunkSize, true); // random string to prevent caching
+				xhr[i].open("GET", settings.url_dl + url_sep(settings.url_dl) + (settings.mpot ? "cors=true&" : ""), true); // random string to prevent caching
 				xhr[i].send();
 			}.bind(this),
 			1 + delay
@@ -388,7 +389,7 @@ function dlTest(done) {
 	}
 	// every 200ms, update dlStatus
 	interval = setInterval(
-		function() {
+		function () {
 			tverb("DL: " + dlStatus + (graceTimeDone ? "" : " (in grace time)"));
 			var t = new Date().getTime() - startT;
 			if (graceTimeDone) dlProgress = (t + bonusT) / (settings.time_dl_max * 1000);
@@ -438,7 +439,7 @@ function ulTest(done) {
 	try {
 		r = new Uint32Array(r);
 		for (var i = 0; i < r.length; i++) r[i] = Math.random() * maxInt;
-	} catch (e) {}
+	} catch (e) { }
 	var req = [];
 	var reqsmall = [];
 	for (var i = 0; i < settings.xhr_ul_blob_megabytes; i++) req.push(r);
@@ -447,10 +448,10 @@ function ulTest(done) {
 	try {
 		r = new Uint32Array(r);
 		for (var i = 0; i < r.length; i++) r[i] = Math.random() * maxInt;
-	} catch (e) {}
+	} catch (e) { }
 	reqsmall.push(r);
 	reqsmall = new Blob(reqsmall);
-	var testFunction = function() {
+	var testFunction = function () {
 		var totLoaded = 0.0, // total number of transmitted bytes
 			startT = new Date().getTime(), // timestamp when test was started
 			bonusT = 0, //how many milliseconds the test has been shortened by (higher on faster connections)
@@ -458,9 +459,9 @@ function ulTest(done) {
 			failed = false; // set to true if a stream fails
 		xhr = [];
 		// function to create an upload stream. streams are slightly delayed so that they will not end at the same time
-		var testStream = function(i, delay) {
+		var testStream = function (i, delay) {
 			setTimeout(
-				function() {
+				function () {
 					if (testState !== 3) return; // delayed stream ended up starting after the end of the upload test
 					tverb("ul test stream started " + i + " " + delay);
 					var prevLoaded = 0; // number of bytes transmitted last time onprogress was called
@@ -478,7 +479,7 @@ function ulTest(done) {
 					}
 					if (ie11workaround) {
 						// IE11 workarond: xhr.upload does not work properly, therefore we send a bunch of small 256k requests and use the onload event as progress. This is not precise, especially on fast connections
-						xhr[i].onload = xhr[i].onerror = function() {
+						xhr[i].onload = xhr[i].onerror = function () {
 							tverb("ul stream progress event (ie11wa)");
 							totLoaded += reqsmall.size;
 							testStream(i, 0);
@@ -486,17 +487,17 @@ function ulTest(done) {
 						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
 						try {
 							xhr[i].setRequestHeader("Content-Encoding", "identity"); // disable compression (some browsers may refuse it, but data is incompressible anyway)
-						} catch (e) {}
+						} catch (e) { }
 						//No Content-Type header in MPOT branch because it triggers bugs in some browsers
 						xhr[i].send(reqsmall);
 					} else {
 						// REGULAR version, no workaround
-						xhr[i].upload.onprogress = function(event) {
+						xhr[i].upload.onprogress = function (event) {
 							tverb("ul stream progress event " + i + " " + event.loaded);
 							if (testState !== 3) {
 								try {
 									x.abort();
-								} catch (e) {}
+								} catch (e) { }
 							} // just in case this XHR is still running after the upload test
 							// progress event, add number of new loaded bytes to totLoaded
 							var loadDiff = event.loaded <= 0 ? 0 : event.loaded - prevLoaded;
@@ -504,17 +505,17 @@ function ulTest(done) {
 							totLoaded += loadDiff;
 							prevLoaded = event.loaded;
 						}.bind(this);
-						xhr[i].upload.onload = function() {
+						xhr[i].upload.onload = function () {
 							// this stream sent all the garbage data, start again
 							tverb("ul stream finished " + i);
 							testStream(i, 0);
 						}.bind(this);
-						xhr[i].upload.onerror = function() {
+						xhr[i].upload.onerror = function () {
 							tverb("ul stream failed " + i);
 							if (settings.xhr_ignoreErrors === 0) failed = true; //abort
 							try {
 								xhr[i].abort();
-							} catch (e) {}
+							} catch (e) { }
 							delete xhr[i];
 							if (settings.xhr_ignoreErrors === 1) testStream(i, 0); //restart stream
 						}.bind(this);
@@ -522,7 +523,7 @@ function ulTest(done) {
 						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
 						try {
 							xhr[i].setRequestHeader("Content-Encoding", "identity"); // disable compression (some browsers may refuse it, but data is incompressible anyway)
-						} catch (e) {}
+						} catch (e) { }
 						//No Content-Type header in MPOT branch because it triggers bugs in some browsers
 						xhr[i].send(req);
 					}
@@ -536,7 +537,7 @@ function ulTest(done) {
 		}
 		// every 200ms, update ulStatus
 		interval = setInterval(
-			function() {
+			function () {
 				tverb("UL: " + ulStatus + (graceTimeDone ? "" : " (in grace time)"));
 				var t = new Date().getTime() - startT;
 				if (graceTimeDone) ulProgress = (t + bonusT) / (settings.time_ul_max * 1000);
@@ -578,7 +579,7 @@ function ulTest(done) {
 		tverb("Sending POST request before performing upload test");
 		xhr = [];
 		xhr[0] = new XMLHttpRequest();
-		xhr[0].onload = xhr[0].onerror = function() {
+		xhr[0].onload = xhr[0].onerror = function () {
 			tverb("POST request sent, starting upload test");
 			testFunction();
 		}.bind(this);
@@ -600,12 +601,12 @@ function pingTest(done) {
 	var prevInstspd = 0; // last ping time, used for jitter calculation
 	xhr = [];
 	// ping function
-	var doPing = function() {
+	var doPing = function () {
 		tverb("ping");
 		pingProgress = i / settings.count_ping;
 		prevT = new Date().getTime();
 		xhr[0] = new XMLHttpRequest();
-		xhr[0].onload = function() {
+		xhr[0].onload = function () {
 			// pong
 			tverb("pong");
 			if (i === 0) {
@@ -650,7 +651,7 @@ function pingTest(done) {
 				done();
 			}
 		}.bind(this);
-		xhr[0].onerror = function() {
+		xhr[0].onerror = function () {
 			// a ping failed, cancel test
 			tverb("ping failed");
 			if (settings.xhr_ignoreErrors === 0) {
@@ -685,7 +686,7 @@ function pingTest(done) {
 function sendTelemetry(done) {
 	if (settings.telemetry_level < 1) return;
 	xhr = new XMLHttpRequest();
-	xhr.onload = function() {
+	xhr.onload = function () {
 		try {
 			var parts = xhr.responseText.split(" ");
 			if (parts[0] == "id") {
@@ -700,7 +701,7 @@ function sendTelemetry(done) {
 			done(null);
 		}
 	};
-	xhr.onerror = function() {
+	xhr.onerror = function () {
 		console.log("TELEMETRY ERROR " + xhr.status);
 		done(null);
 	};
