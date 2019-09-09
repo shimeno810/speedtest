@@ -316,7 +316,8 @@ function getIp(done) {
 		tlog("getIp failed, took " + (new Date().getTime() - startT) + "ms");
 		done();
 	};
-	xhr.open("GET", settings.url_getIp + url_sep(settings.url_getIp) + (settings.mpot ? "cors=true&" : "") + (settings.getIp_ispInfo ? "isp=true" + (settings.getIp_ispInfo_distance ? "&distance=" + settings.getIp_ispInfo_distance + "&" : "&") : "&") + "r=" + Math.random(), true);
+	// xhr.open("GET", settings.url_getIp + url_sep(settings.url_getIp) + (settings.mpot ? "cors=true&" : "") + (settings.getIp_ispInfo ? "isp=true" + (settings.getIp_ispInfo_distance ? "&distance=" + settings.getIp_ispInfo_distance + "&" : "&") : "&") + "r=" + Math.random(), true);
+	xhr.open("GET", settings.url_getIp, true);
 	xhr.send();
 }
 // download test, calls done function when it's over
@@ -377,7 +378,7 @@ function dlTest(done) {
 					else xhr[i].responseType = "arraybuffer";
 				} catch (e) { }
 				// xhr[i].open("GET", settings.url_dl + url_sep(settings.url_dl) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random() + "&ckSize=" + settings.garbagePhp_chunkSize, true); // random string to prevent caching
-				xhr[i].open("GET", settings.url_dl + url_sep(settings.url_dl) + (settings.mpot ? "cors=true&" : ""), true); // random string to prevent caching
+				xhr[i].open("GET", settings.url_dl, true); // random string to prevent caching
 				xhr[i].send();
 			}.bind(this),
 			1 + delay
@@ -484,7 +485,7 @@ function ulTest(done) {
 							totLoaded += reqsmall.size;
 							testStream(i, 0);
 						};
-						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
+						xhr[i].open("POST", settings.url_ul, true); // random string to prevent caching
 						try {
 							xhr[i].setRequestHeader("Content-Encoding", "identity"); // disable compression (some browsers may refuse it, but data is incompressible anyway)
 						} catch (e) { }
@@ -520,7 +521,7 @@ function ulTest(done) {
 							if (settings.xhr_ignoreErrors === 1) testStream(i, 0); //restart stream
 						}.bind(this);
 						// send xhr
-						xhr[i].open("POST", settings.url_ul + url_sep(settings.url_ul) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
+						xhr[i].open("POST", settings.url_ul, true); // random string to prevent caching
 						try {
 							xhr[i].setRequestHeader("Content-Encoding", "identity"); // disable compression (some browsers may refuse it, but data is incompressible anyway)
 						} catch (e) { }
@@ -677,7 +678,7 @@ function pingTest(done) {
 			}
 		}.bind(this);
 		// send xhr
-		xhr[0].open("GET", settings.url_ping + url_sep(settings.url_ping) + (settings.mpot ? "cors=true&" : "") + "r=" + Math.random(), true); // random string to prevent caching
+		xhr[0].open("GET", settings.url_ping, true); // random string to prevent caching
 		xhr[0].send();
 	}.bind(this);
 	doPing(); // start first ping
