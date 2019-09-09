@@ -1,546 +1,553 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <meta charset="UTF-8" />
-  <title>HTML5 Speedtest</title>
-  <style type="text/css">
-    html,
-    body {
-      border: none;
-      padding: 0;
-      margin: 0;
-      background: #ffffff;
-      color: #202020;
-    }
-
-    body {
-      text-align: center;
-      font-family: "Roboto", sans-serif;
-    }
-
-    h1 {
-      color: #404040;
-    }
-
-    #loop {
-      display: inline-block;
-      margin: 0 auto;
-      color: #6060aa;
-      background-color: rgba(0, 0, 0, 0);
-      border: 0.15em solid #6060ff;
-      border-radius: 0.3em;
-      transition: all 0.3s;
-      box-sizing: border-box;
-      width: 8em;
-      height: 3em;
-      line-height: 2.7em;
-      cursor: pointer;
-      box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
-    }
-
-    #loop::before {
-      content: "Loop OFF";
-    }
-
-    #loop.on {
-      background-color: #3030ff;
-      border-color: #6060ff;
-      color: #ffffff;
-    }
-
-    #loop.on:before {
-      content: "Loop ON";
-    }
-
-    #startStopBtn {
-      display: inline-block;
-      margin: 0 auto;
-      color: #6060aa;
-      background-color: rgba(0, 0, 0, 0);
-      border: 0.15em solid #6060ff;
-      border-radius: 0.3em;
-      transition: all 0.3s;
-      box-sizing: border-box;
-      width: 8em;
-      height: 3em;
-      line-height: 2.7em;
-      cursor: pointer;
-      box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
-    }
-
-    #startStopBtn:hover {
-      box-shadow: 0 0 2em rgba(0, 0, 0, 0.1), inset 0 0 1em rgba(0, 0, 0, 0.1);
-    }
-
-    #startStopBtn.running {
-      background-color: #ff3030;
-      border-color: #ff6060;
-      color: #ffffff;
-    }
-
-    #startStopBtn:before {
-      content: "Start 1stream";
-    }
-
-    #startStopBtn.running:before {
-      content: "Abort";
-    }
-
-    #startStopBtn4 {
-      display: inline-block;
-      margin: 0 auto;
-      color: #6060aa;
-      background-color: rgba(0, 0, 0, 0);
-      border: 0.15em solid #6060ff;
-      border-radius: 0.3em;
-      transition: all 0.3s;
-      box-sizing: border-box;
-      width: 8em;
-      height: 3em;
-      line-height: 2.7em;
-      cursor: pointer;
-      box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
-    }
-
-    #startStopBtn4:hover {
-      box-shadow: 0 0 2em rgba(0, 0, 0, 0.1), inset 0 0 1em rgba(0, 0, 0, 0.1);
-    }
-
-    #startStopBtn4.running {
-      background-color: #ff3030;
-      border-color: #ff6060;
-      color: #ffffff;
-    }
-
-    #startStopBtn4:before {
-      content: "Start 4stream";
-    }
-
-    #startStopBtn4.running:before {
-      content: "Abort";
-    }
-
-    #test {
-      margin-top: 1em;
-      margin-bottom: 1em;
-    }
-
-    div.testArea {
-      display: inline-block;
-      width: 14em;
-      height: 9em;
-      position: relative;
-      box-sizing: border-box;
-    }
-
-    div.testName {
-      position: absolute;
-      top: 0.1em;
-      left: 0;
-      width: 100%;
-      font-size: 1.4em;
-      z-index: 9;
-    }
-
-    div.meterText {
-      position: absolute;
-      bottom: 1.5em;
-      left: 0;
-      width: 100%;
-      font-size: 2.5em;
-      z-index: 9;
-    }
-
-    #dlText {
-      color: #6060aa;
-    }
-
-    #ulText {
-      color: #309030;
-    }
-
-    #pingText,
-    #jitText {
-      color: #aa6060;
-    }
-
-    div.meterText:empty:before {
-      color: #505050 !important;
-      content: "0.00";
-    }
-
-    div.unit {
-      position: absolute;
-      bottom: 2em;
-      left: 0;
-      width: 100%;
-      z-index: 9;
-    }
-
-    div.testGroup {
-      display: inline-block;
-    }
-
-    @media all and (max-width: 65em) {
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML5 Speedtest</title>
+    <style type="text/css">
+      html,
       body {
-        font-size: 1.5vw;
+        border: none;
+        padding: 0;
+        margin: 0;
+        background: #ffffff;
+        color: #202020;
       }
-    }
 
-    @media all and (max-width: 40em) {
       body {
-        font-size: 0.8em;
+        text-align: center;
+        font-family: "Roboto", sans-serif;
+      }
+
+      h1 {
+        color: #404040;
+      }
+
+      #loop {
+        display: inline-block;
+        margin: 0 auto;
+        color: #6060aa;
+        background-color: rgba(0, 0, 0, 0);
+        border: 0.15em solid #6060ff;
+        border-radius: 0.3em;
+        transition: all 0.3s;
+        box-sizing: border-box;
+        width: 8em;
+        height: 3em;
+        line-height: 2.7em;
+        cursor: pointer;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
+      }
+
+      #loop::before {
+        content: "Loop OFF";
+      }
+
+      #loop.on {
+        background-color: #3030ff;
+        border-color: #6060ff;
+        color: #ffffff;
+      }
+
+      #loop.on:before {
+        content: "Loop ON";
+      }
+
+      #startStopBtn {
+        display: inline-block;
+        margin: 0 auto;
+        color: #6060aa;
+        background-color: rgba(0, 0, 0, 0);
+        border: 0.15em solid #6060ff;
+        border-radius: 0.3em;
+        transition: all 0.3s;
+        box-sizing: border-box;
+        width: 8em;
+        height: 3em;
+        line-height: 2.7em;
+        cursor: pointer;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
+      }
+
+      #startStopBtn:hover {
+        box-shadow: 0 0 2em rgba(0, 0, 0, 0.1), inset 0 0 1em rgba(0, 0, 0, 0.1);
+      }
+
+      #startStopBtn.running {
+        background-color: #ff3030;
+        border-color: #ff6060;
+        color: #ffffff;
+      }
+
+      #startStopBtn:before {
+        content: "Start 1stream";
+      }
+
+      #startStopBtn.running:before {
+        content: "Abort";
+      }
+
+      #startStopBtn4 {
+        display: inline-block;
+        margin: 0 auto;
+        color: #6060aa;
+        background-color: rgba(0, 0, 0, 0);
+        border: 0.15em solid #6060ff;
+        border-radius: 0.3em;
+        transition: all 0.3s;
+        box-sizing: border-box;
+        width: 8em;
+        height: 3em;
+        line-height: 2.7em;
+        cursor: pointer;
+        box-shadow: 0 0 0 rgba(0, 0, 0, 0.1), inset 0 0 0 rgba(0, 0, 0, 0.1);
+      }
+
+      #startStopBtn4:hover {
+        box-shadow: 0 0 2em rgba(0, 0, 0, 0.1), inset 0 0 1em rgba(0, 0, 0, 0.1);
+      }
+
+      #startStopBtn4.running {
+        background-color: #ff3030;
+        border-color: #ff6060;
+        color: #ffffff;
+      }
+
+      #startStopBtn4:before {
+        content: "Start 4stream";
+      }
+
+      #startStopBtn4.running:before {
+        content: "Abort";
+      }
+
+      #test {
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+
+      div.testArea {
+        display: inline-block;
+        width: 14em;
+        height: 9em;
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      div.testName {
+        position: absolute;
+        top: 0.1em;
+        left: 0;
+        width: 100%;
+        font-size: 1.4em;
+        z-index: 9;
+      }
+
+      div.meterText {
+        position: absolute;
+        bottom: 1.5em;
+        left: 0;
+        width: 100%;
+        font-size: 2.5em;
+        z-index: 9;
+      }
+
+      #dlText {
+        color: #6060aa;
+      }
+
+      #ulText {
+        color: #309030;
+      }
+
+      #pingText,
+      #jitText {
+        color: #aa6060;
+      }
+
+      div.meterText:empty:before {
+        color: #505050 !important;
+        content: "0.00";
+      }
+
+      div.unit {
+        position: absolute;
+        bottom: 2em;
+        left: 0;
+        width: 100%;
+        z-index: 9;
       }
 
       div.testGroup {
+        display: inline-block;
+      }
+
+      @media all and (max-width: 65em) {
+        body {
+          font-size: 1.5vw;
+        }
+      }
+
+      @media all and (max-width: 40em) {
+        body {
+          font-size: 0.8em;
+        }
+
+        div.testGroup {
+          display: block;
+          margin: 0 auto;
+        }
+      }
+
+      #chart1Area,
+      #chart2Area {
+        width: 100%;
+        max-width: 30em;
+        height: 10em;
         display: block;
         margin: 0 auto;
       }
-    }
+    </style>
+    <script src="Chart.bundle.min.js"></script>
+    <script type="text/javascript">
+      function I(id) {
+        return document.getElementById(id);
+      }
+      var param1stream = {
+        //custom test parameters. See doc.md for a complete list
+        time_dl_max: 180, //download test lasts up to 60 seconds
+        time_ul_max: 180, //upload test lasts up to 60 seconds
+        count_ping: 60, //ping+jitter test does 30 pings
+        getIp_ispInfo: false, //will only get IP address without ISP info
+        xhr_dlMultistream: 1,
+        xhr_ulMultistream: 1,
+        url_dl: "garbage.dat",
+        url_ul: "empty.dat",
+        url_ping: "empty.dat",
+        url_getIp: "getIP.txt",
+        test_order: "P_D"
+      };
+      var param4stream = {
+        //custom test parameters. See doc.md for a complete list
+        time_dl_max: 180, //download test lasts up to 60 seconds
+        time_ul_max: 180, //upload test lasts up to 60 seconds
+        count_ping: 60, //ping+jitter test does 30 pings
+        getIp_ispInfo: false, //will only get IP address without ISP info
+        xhr_dlMultistream: 4,
+        xhr_ulMultistream: 4,
+        url_dl: "garbage.dat",
+        url_ul: "empty.dat",
+        url_ping: "empty.dat",
+        url_getIp: "getIP.txt",
+        test_order: "P_D"
+      };
+      var w = null; //speedtest worker
+      var interval;
+      function startStop(parameters, callback) {
+        if (w != null) {
+          //speedtest is running, abort
+          w.postMessage("abort");
+          w = null;
+          I("startStopBtn").className = "";
+          I("startStopBtn4").className = "";
+          clearInterval(interval);
+          initUI();
+        } else {
+          var chart1ctx = document
+            .getElementById("chart1Area")
+            .getContext("2d");
+          var chart2ctx = document
+            .getElementById("chart2Area")
+            .getContext("2d");
+          var dlDataset = {
+            label: "Download",
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: "butt",
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: "miter",
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [0],
+            spanGaps: false
+          };
+          var ulDataset = {
+            label: "Upload",
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: "rgba(192,192,75,0.4)",
+            borderColor: "rgba(192,192,75,1)",
+            borderCapStyle: "butt",
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: "miter",
+            pointBorderColor: "rgba(192,192,75,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(192,192,75,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [0],
+            spanGaps: false
+          };
+          var pingDataset = {
+            label: "RTT",
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,220,75,0.4)",
+            borderColor: "rgba(75,220,75,1)",
+            borderCapStyle: "butt",
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: "miter",
+            pointBorderColor: "rgba(75,220,75,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,220,75,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [],
+            spanGaps: false
+          };
+          var jitterDataset = {
+            label: "Jitter",
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: "rgba(220,75,75,0.4)",
+            borderColor: "rgba(220,75,75,1)",
+            borderCapStyle: "butt",
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: "miter",
+            pointBorderColor: "rgba(220,75,75,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(220,75,75,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: [],
+            spanGaps: false
+          };
 
-    #chart1Area,
-    #chart2Area {
-      width: 100%;
-      max-width: 30em;
-      height: 10em;
-      display: block;
-      margin: 0 auto;
-    }
-  </style>
-  <script src="Chart.bundle.min.js"></script>
-  <script type="text/javascript">
-    function I(id) {
-      return document.getElementById(id);
-    }
-    var param1stream = {
-      //custom test parameters. See doc.md for a complete list
-      time_dl_max: 180, //download test lasts up to 60 seconds
-      time_ul_max: 180, //upload test lasts up to 60 seconds
-      count_ping: 60, //ping+jitter test does 30 pings
-      getIp_ispInfo: false, //will only get IP address without ISP info
-      xhr_dlMultistream: 1,
-      xhr_ulMultistream: 1,
-      url_dl: "garbage.dat",
-      url_ul: "empty.dat",
-      url_ping: "empty.dat",
-      url_getIp: "getIP.txt"
-    };
-    var param4stream = {
-      //custom test parameters. See doc.md for a complete list
-      time_dl_max: 180, //download test lasts up to 60 seconds
-      time_ul_max: 180, //upload test lasts up to 60 seconds
-      count_ping: 60, //ping+jitter test does 30 pings
-      getIp_ispInfo: false, //will only get IP address without ISP info
-      xhr_dlMultistream: 4,
-      xhr_ulMultistream: 4,
-      url_dl: "garbage.dat",
-      url_ul: "empty.dat",
-      url_ping: "empty.dat",
-      url_getIp: "getIP.txt"
-    };
-    var w = null; //speedtest worker
-    var interval;
-    function startStop(parameters, callback) {
-      if (w != null) {
-        //speedtest is running, abort
-        w.postMessage("abort");
-        w = null;
-        I("startStopBtn").className = "";
-        I("startStopBtn4").className = "";
-        clearInterval(interval);
-        initUI();
-      } else {
-        var chart1ctx = document
-          .getElementById("chart1Area")
-          .getContext("2d");
-        var chart2ctx = document
-          .getElementById("chart2Area")
-          .getContext("2d");
-        var dlDataset = {
-          label: "Download",
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: "rgba(75,192,192,0.4)",
-          borderColor: "rgba(75,192,192,1)",
-          borderCapStyle: "butt",
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: "miter",
-          pointBorderColor: "rgba(75,192,192,1)",
-          pointBackgroundColor: "#fff",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: "rgba(75,192,192,1)",
-          pointHoverBorderColor: "rgba(220,220,220,1)",
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: [0],
-          spanGaps: false
-        };
-        var ulDataset = {
-          label: "Upload",
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: "rgba(192,192,75,0.4)",
-          borderColor: "rgba(192,192,75,1)",
-          borderCapStyle: "butt",
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: "miter",
-          pointBorderColor: "rgba(192,192,75,1)",
-          pointBackgroundColor: "#fff",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: "rgba(192,192,75,1)",
-          pointHoverBorderColor: "rgba(220,220,220,1)",
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: [0],
-          spanGaps: false
-        };
-        var pingDataset = {
-          label: "RTT",
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: "rgba(75,220,75,0.4)",
-          borderColor: "rgba(75,220,75,1)",
-          borderCapStyle: "butt",
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: "miter",
-          pointBorderColor: "rgba(75,220,75,1)",
-          pointBackgroundColor: "#fff",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: "rgba(75,220,75,1)",
-          pointHoverBorderColor: "rgba(220,220,220,1)",
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: [],
-          spanGaps: false
-        };
-        var jitterDataset = {
-          label: "Jitter",
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: "rgba(220,75,75,0.4)",
-          borderColor: "rgba(220,75,75,1)",
-          borderCapStyle: "butt",
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: "miter",
-          pointBorderColor: "rgba(220,75,75,1)",
-          pointBackgroundColor: "#fff",
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: "rgba(220,75,75,1)",
-          pointHoverBorderColor: "rgba(220,220,220,1)",
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: [],
-          spanGaps: false
-        };
-
-        var chart1Options = {
-          type: "line",
-          data: {
-            datasets: [dlDataset, ulDataset]
-          },
-          options: {
-            responsive: true,
-            legend: {
-              position: "bottom"
+          var chart1Options = {
+            type: "line",
+            data: {
+              datasets: [dlDataset, ulDataset]
             },
-            scales: {
-              xAxes: [
-                {
-                  display: true,
-                  scaleLabel: {
-                    display: false
-                  },
-                  ticks: {
-                    beginAtZero: true
+            options: {
+              responsive: true,
+              legend: {
+                position: "bottom"
+              },
+              scales: {
+                xAxes: [
+                  {
+                    display: true,
+                    scaleLabel: {
+                      display: false
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
                   }
-                }
-              ],
-              yAxes: [
-                {
-                  display: true,
-                  scaleLabel: "Speed",
-                  ticks: {
-                    beginAtZero: true
+                ],
+                yAxes: [
+                  {
+                    display: true,
+                    scaleLabel: "Speed",
+                    ticks: {
+                      beginAtZero: true
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
-          }
-        };
-        var chart2Options = {
-          type: "line",
-          data: {
-            datasets: [pingDataset, jitterDataset]
-          },
-          options: {
-            responsive: true,
-            legend: {
-              position: "bottom"
+          };
+          var chart2Options = {
+            type: "line",
+            data: {
+              datasets: [pingDataset, jitterDataset]
             },
-            scales: {
-              xAxes: [
-                {
-                  display: true,
-                  scaleLabel: {
-                    display: false
-                  },
-                  ticks: {
-                    beginAtZero: true
+            options: {
+              responsive: true,
+              legend: {
+                position: "bottom"
+              },
+              scales: {
+                xAxes: [
+                  {
+                    display: true,
+                    scaleLabel: {
+                      display: false
+                    },
+                    ticks: {
+                      beginAtZero: true
+                    }
                   }
-                }
-              ],
-              yAxes: [
-                {
-                  display: true,
-                  scaleLabel: "Latency",
-                  ticks: {
-                    beginAtZero: true
+                ],
+                yAxes: [
+                  {
+                    display: true,
+                    scaleLabel: "Latency",
+                    ticks: {
+                      beginAtZero: true
+                    }
                   }
-                }
-              ]
+                ]
+              }
             }
-          }
-        };
+          };
 
-        var chart1 = new Chart(chart1ctx, chart1Options);
-        var chart2 = new Chart(chart2ctx, chart2Options);
+          var chart1 = new Chart(chart1ctx, chart1Options);
+          var chart2 = new Chart(chart2ctx, chart2Options);
 
-        document.getElementById("testArea").style.display = "";
-        w = new Worker("speedtest_worker.js");
+          document.getElementById("testArea").style.display = "";
+          w = new Worker("speedtest_worker.js");
 
-        interval = setInterval(function () {
-          w.postMessage("status");
-        }, 200);
-        w.onmessage = function (event) {
-          var data = JSON.parse(event.data);
-          var status = data.testState;
-          if (status >= 4) {
-            //test completed
-            I("startStopBtn").className = "";
-            I("startStopBtn4").className = "";
-            clearInterval(interval);
-            w = null;
-            callback(parameters);
-          }
-          if (status === 5) {
-            document.getElementById("testArea").style.display = "none";
-          }
-          if (status === 1 && Number(data.dlStatus) > 0) {
-            chart1.data.datasets[0].data[
-              ~~(20 * Number(data.dlProgress))
-            ] = Number(data.dlStatus);
-            chart1.data.labels[chart1.data.datasets[0].data.length - 1] = "";
-            chart1.update();
-          }
-          if (status === 3 && Number(data.ulStatus) > 0) {
-            chart1.data.datasets[1].data[
-              ~~(20 * Number(data.ulProgress))
-            ] = Number(data.ulStatus);
-            chart1.data.labels[chart1.data.datasets[1].data.length - 1] = "";
-            chart1.update();
-          }
-          if (status === 2 && Number(data.pingStatus) > 0) {
-            chart2.data.datasets[0].data.push(Number(data.pingStatus));
-            chart2.data.datasets[1].data.push(Number(data.jitterStatus));
-            chart2.data.labels[chart2.data.datasets[0].data.length - 1] = "";
-            chart2.data.labels[chart2.data.datasets[1].data.length - 1] = "";
-            chart2.update();
-          }
+          interval = setInterval(function() {
+            w.postMessage("status");
+          }, 200);
+          w.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            var status = data.testState;
+            if (status >= 4) {
+              //test completed
+              I("startStopBtn").className = "";
+              I("startStopBtn4").className = "";
+              clearInterval(interval);
+              w = null;
+              callback(parameters);
+            }
+            if (status === 5) {
+              document.getElementById("testArea").style.display = "none";
+            }
+            if (status === 1 && Number(data.dlStatus) > 0) {
+              chart1.data.datasets[0].data[
+                ~~(20 * Number(data.dlProgress))
+              ] = Number(data.dlStatus);
+              chart1.data.labels[chart1.data.datasets[0].data.length - 1] = "";
+              chart1.update();
+            }
+            if (status === 3 && Number(data.ulStatus) > 0) {
+              chart1.data.datasets[1].data[
+                ~~(20 * Number(data.ulProgress))
+              ] = Number(data.ulStatus);
+              chart1.data.labels[chart1.data.datasets[1].data.length - 1] = "";
+              chart1.update();
+            }
+            if (status === 2 && Number(data.pingStatus) > 0) {
+              chart2.data.datasets[0].data.push(Number(data.pingStatus));
+              chart2.data.datasets[1].data.push(Number(data.jitterStatus));
+              chart2.data.labels[chart2.data.datasets[0].data.length - 1] = "";
+              chart2.data.labels[chart2.data.datasets[1].data.length - 1] = "";
+              chart2.update();
+            }
 
-          I("dlText").textContent =
-            status == 1 && data.dlStatus == 0 ? "..." : data.dlStatus;
-          I("ulText").textContent =
-            status == 3 && data.ulStatus == 0 ? "..." : data.ulStatus;
-          I("pingText").textContent = data.pingStatus;
-          I("jitText").textContent = data.jitterStatus;
-        };
-        w.postMessage("start " + JSON.stringify(parameters)); //run the test with custom parameters
-        I("startStopBtn").className = "running";
-        I("startStopBtn4").className = "running";
-        I("testName").innerHTML = "Max test time: " + parameters.time_dl_max + " sec, Stream num: " + parameters.xhr_dlMultistream;
+            I("dlText").textContent =
+              status == 1 && data.dlStatus == 0 ? "..." : data.dlStatus;
+            I("ulText").textContent =
+              status == 3 && data.ulStatus == 0 ? "..." : data.ulStatus;
+            I("pingText").textContent = data.pingStatus;
+            I("jitText").textContent = data.jitterStatus;
+          };
+          w.postMessage("start " + JSON.stringify(parameters)); //run the test with custom parameters
+          I("startStopBtn").className = "running";
+          I("startStopBtn4").className = "running";
+          I("testName").innerHTML =
+            "Max test time: " +
+            parameters.time_dl_max +
+            " sec, Stream num: " +
+            parameters.xhr_dlMultistream;
+        }
       }
-    }
 
-    //function to (re)initialize UI
-    function initUI() {
-      I("dlText").textContent = "";
-      I("ulText").textContent = "";
-      I("pingText").textContent = "";
-      I("jitText").textContent = "";
-    }
-
-    var flag_loop = false;
-    function loopOnOff() {
-      if (I("loop").className == "") {
-        I("loop").className = "on";
-        flag_loop = true;
-      } else {
-        I("loop").className = "";
-        flag_loop = false;
+      //function to (re)initialize UI
+      function initUI() {
+        I("dlText").textContent = "";
+        I("ulText").textContent = "";
+        I("pingText").textContent = "";
+        I("jitText").textContent = "";
       }
-    }
 
-    var testFinished = function (param) {
-      if (flag_loop) {
-        startStop(param, testFinished);
+      var flag_loop = false;
+      function loopOnOff() {
+        if (I("loop").className == "") {
+          I("loop").className = "on";
+          flag_loop = true;
+        } else {
+          I("loop").className = "";
+          flag_loop = false;
+        }
       }
-    }
-  </script>
-</head>
 
-<body>
-  <h1>HTML5 Speedtest</h1>
-  <div id="startStopBtn" onclick="startStop(param1stream,testFinished)"></div>
-  <div id="startStopBtn4" onclick="startStop(param4stream,testFinished)"></div>
-  <div id="test">
-    <div id="loop" onclick="loopOnOff()"></div>
-    <h2 id="testName"></h2>
-    <div class="testGroup">
-      <div class="testArea">
-        <div class="testName">Download</div>
-        <div id="dlText" class="meterText"></div>
-        <div class="unit">Mbps</div>
+      var testFinished = function(param) {
+        if (flag_loop) {
+          startStop(param, testFinished);
+        }
+      };
+    </script>
+  </head>
+
+  <body>
+    <h1>HTML5 Speedtest</h1>
+    <div id="startStopBtn" onclick="startStop(param1stream,testFinished)"></div>
+    <div
+      id="startStopBtn4"
+      onclick="startStop(param4stream,testFinished)"
+    ></div>
+    <div id="test">
+      <div id="loop" onclick="loopOnOff()"></div>
+      <h2 id="testName"></h2>
+      <div class="testGroup">
+        <div class="testArea">
+          <div class="testName">Download</div>
+          <div id="dlText" class="meterText"></div>
+          <div class="unit">Mbps</div>
+        </div>
+        <div class="testArea">
+          <div class="testName">Upload</div>
+          <div id="ulText" class="meterText"></div>
+          <div class="unit">Mbps</div>
+        </div>
       </div>
-      <div class="testArea">
-        <div class="testName">Upload</div>
-        <div id="ulText" class="meterText"></div>
-        <div class="unit">Mbps</div>
+      <div class="testGroup">
+        <div class="testArea">
+          <div class="testName">RTT</div>
+          <div id="pingText" class="meterText"></div>
+          <div class="unit">ms</div>
+        </div>
+        <div class="testArea">
+          <div class="testName">Jitter</div>
+          <div id="jitText" class="meterText"></div>
+          <div class="unit">ms</div>
+        </div>
       </div>
     </div>
-    <div class="testGroup">
-      <div class="testArea">
-        <div class="testName">RTT</div>
-        <div id="pingText" class="meterText"></div>
-        <div class="unit">ms</div>
-      </div>
-      <div class="testArea">
-        <div class="testName">Jitter</div>
-        <div id="jitText" class="meterText"></div>
-        <div class="unit">ms</div>
-      </div>
+    <div id="testArea" style="display:none">
+      <h2>Speed</h2>
+      <canvas id="chart1Area"></canvas>
+
+      <h2>Latency</h2>
+      <canvas id="chart2Area"></canvas>
+      <br />
     </div>
-  </div>
-  <div id="testArea" style="display:none">
-    <h2>Speed</h2>
-    <canvas id="chart1Area"></canvas>
-
-    <h2>Latency</h2>
-    <canvas id="chart2Area"></canvas>
-    <br />
-  </div>
-</body>
-
+  </body>
 </html>
